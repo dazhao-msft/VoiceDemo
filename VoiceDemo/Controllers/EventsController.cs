@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace VoiceDemo.Controllers
 {
@@ -14,9 +17,24 @@ namespace VoiceDemo.Controllers
         }
 
         [HttpPost]
-        public void Post()
+        public async Task PostAsync()
         {
-            _logger.LogInformation("event posted.");
+            var builder = new StringBuilder();
+
+            builder.AppendLine("Request header:");
+            foreach (var header in Request.Headers)
+            {
+                builder.AppendLine($"{header.Key} : {header.Value}");
+            }
+
+            builder.AppendLine();
+
+            builder.AppendLine("Request body:");
+            Memory<byte> buffer = new byte[4 * 1024];
+            int bytesRead = await Request.Body.ReadAsync(buffer);
+            builder.AppendLine(Encoding.UTF8.GetString(buffer.Slice(0, bytesRead).Span));
+
+            _logger.LogInformation(builder.ToString());
         }
     }
 }

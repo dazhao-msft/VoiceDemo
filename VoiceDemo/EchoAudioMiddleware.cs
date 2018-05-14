@@ -20,9 +20,17 @@ namespace VoiceDemo
         {
             if (context.WebSockets.IsWebSocketRequest)
             {
-                WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
-
-                await EchoAsync(context, webSocket, logger);
+                using (WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync())
+                {
+                    try
+                    {
+                        await EchoAsync(context, webSocket, logger);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // TODO: log additional info.
+                    }
+                }
             }
             else
             {
