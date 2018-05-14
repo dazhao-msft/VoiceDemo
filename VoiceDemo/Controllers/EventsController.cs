@@ -41,6 +41,7 @@ namespace VoiceDemo.Controllers
             string requestBody = Encoding.UTF8.GetString(buffer.Slice(0, bytesRead).Span);
             builder.AppendLine(requestBody);
             var nexmoEvent = JsonConvert.DeserializeObject<NexmoEvent>(requestBody);
+            builder.AppendLine(JsonConvert.SerializeObject(nexmoEvent));
 
             builder.AppendLine("-------------------------------------------------------------");
 
