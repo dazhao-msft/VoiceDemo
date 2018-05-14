@@ -50,7 +50,7 @@ namespace VoiceDemo
                 }
                 else if (result.MessageType == WebSocketMessageType.Binary)
                 {
-                    await webSocket.SendAsync(buffer, WebSocketMessageType.Binary, false, CancellationToken.None);
+                    await webSocket.SendAsync(buffer.Slice(0, result.Count), WebSocketMessageType.Binary, false, CancellationToken.None);
                 }
                 else
                 {
