@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using VoiceDemo.Models;
 
 namespace VoiceDemo.Controllers
 {
@@ -21,7 +23,10 @@ namespace VoiceDemo.Controllers
         {
             var builder = new StringBuilder();
 
+            builder.AppendLine("-------------------------------------------------------------");
+
             builder.AppendLine("Request header:");
+
             foreach (var header in Request.Headers)
             {
                 builder.AppendLine($"{header.Key} : {header.Value}");
@@ -30,9 +35,14 @@ namespace VoiceDemo.Controllers
             builder.AppendLine();
 
             builder.AppendLine("Request body:");
+
             Memory<byte> buffer = new byte[4 * 1024];
             int bytesRead = await Request.Body.ReadAsync(buffer);
-            builder.AppendLine(Encoding.UTF8.GetString(buffer.Slice(0, bytesRead).Span));
+            string requestBody = Encoding.UTF8.GetString(buffer.Slice(0, bytesRead).Span);
+            builder.AppendLine(requestBody);
+            var nexmoEvent = JsonConvert.DeserializeObject<NexmoEvent>(requestBody);
+
+            builder.AppendLine("-------------------------------------------------------------");
 
             _logger.LogInformation(builder.ToString());
         }
