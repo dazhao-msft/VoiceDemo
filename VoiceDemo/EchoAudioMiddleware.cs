@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Net.WebSockets;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace VoiceDemo
@@ -37,11 +36,11 @@ namespace VoiceDemo
 
             while (true)
             {
-                var result = await webSocket.ReceiveAsync(buffer, CancellationToken.None);
+                var result = await webSocket.ReceiveAsync(buffer, context.RequestAborted);
 
                 if (result.MessageType == WebSocketMessageType.Close)
                 {
-                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, context.RequestAborted);
                     break;
                 }
                 else if (result.MessageType == WebSocketMessageType.Text)
@@ -50,7 +49,7 @@ namespace VoiceDemo
                 }
                 else if (result.MessageType == WebSocketMessageType.Binary)
                 {
-                    await webSocket.SendAsync(buffer.Slice(0, result.Count), WebSocketMessageType.Binary, false, CancellationToken.None);
+                    await webSocket.SendAsync(buffer.Slice(0, result.Count), WebSocketMessageType.Binary, result.EndOfMessage, context.RequestAborted);
                 }
                 else
                 {
