@@ -40,7 +40,14 @@ namespace VoiceDemo
 
         private async Task EchoAsync(HttpContext context, WebSocket webSocket, ILogger logger)
         {
-            Memory<byte> buffer = new byte[4 * 1024];
+            //
+            // TODO:
+            // The buffer size needs to be consistent with WebSocketOptions.ReceiveBufferSize (4K by default).
+            // In addition, adjust the buffer size as needed to make sure text message can be received within one frame.
+            //
+            const int ReceiveBufferSize = 4 * 1024;
+
+            Memory<byte> buffer = new byte[ReceiveBufferSize];
 
             while (true)
             {
