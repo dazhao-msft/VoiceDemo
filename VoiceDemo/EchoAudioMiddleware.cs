@@ -53,7 +53,7 @@ namespace VoiceDemo
                 }
                 else if (result.MessageType == WebSocketMessageType.Text)
                 {
-                    logger.LogInformation(Encoding.UTF8.GetString(buffer.Slice(0, result.Count).Span));
+                    logger.LogInformation(Encoding.UTF8.GetString(buffer.Span.Slice(0, result.Count)));
                 }
                 else if (result.MessageType == WebSocketMessageType.Binary)
                 {

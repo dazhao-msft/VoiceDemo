@@ -38,7 +38,7 @@ namespace VoiceDemo.Controllers
 
             Memory<byte> buffer = new byte[4 * 1024];
             int bytesRead = await Request.Body.ReadAsync(buffer);
-            string requestBody = Encoding.UTF8.GetString(buffer.Slice(0, bytesRead).Span);
+            string requestBody = Encoding.UTF8.GetString(buffer.Span.Slice(0, bytesRead));
             builder.AppendLine(requestBody);
             var nexmoEvent = JsonConvert.DeserializeObject<NexmoEvent>(requestBody);
             builder.AppendLine(JsonConvert.SerializeObject(nexmoEvent));
