@@ -51,6 +51,10 @@ namespace VoiceDemo.Models
         protected readonly string Delimiter = "\r\n";
         protected readonly string KeyValueDelimiter = ":";
 
+        protected readonly Encoding _encoding;
+
+        protected MessageSerializer(Encoding encoding) => _encoding = encoding;
+
         public abstract TMessage Deserialize(ReadOnlySpan<byte> buffer);
 
         public abstract ReadOnlySpan<byte> Serialize(TMessage message, Span<byte> buffer);
@@ -58,7 +62,10 @@ namespace VoiceDemo.Models
 
     public sealed class TextMessageSerializer : MessageSerializer<TextMessage>
     {
-        private readonly Encoding _encoding = Encoding.UTF8;
+        public TextMessageSerializer()
+            : base(Encoding.UTF8)
+        {
+        }
 
         public override TextMessage Deserialize(ReadOnlySpan<byte> buffer)
         {
@@ -100,7 +107,10 @@ namespace VoiceDemo.Models
 
     public sealed class BinaryMessageSerializer : MessageSerializer<BinaryMessage>
     {
-        private readonly Encoding _encoding = Encoding.UTF8;
+        public BinaryMessageSerializer()
+            : base(Encoding.UTF8)
+        {
+        }
 
         public override BinaryMessage Deserialize(ReadOnlySpan<byte> buffer)
         {
