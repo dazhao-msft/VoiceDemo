@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.Text;
 
 namespace VoiceDemo.Models
 {
     public abstract class Message
     {
-        public ImmutableDictionary<string, string> Headers { get; set; } = ImmutableDictionary<string, string>.Empty;
+        public IDictionary<string, string> Headers { get; } = new Dictionary<string, string>();
 
         public string Path
         {
@@ -16,7 +16,7 @@ namespace VoiceDemo.Models
             }
             set
             {
-                Headers = Headers.SetItem("Path", value);
+                Headers["Path"] = value;
             }
         }
 
@@ -28,7 +28,7 @@ namespace VoiceDemo.Models
             }
             set
             {
-                Headers = Headers.SetItem("X-RequestId", value.ToString("N"));
+                Headers["X-RequestId"] = value.ToString("N");
             }
         }
     }
@@ -77,7 +77,7 @@ namespace VoiceDemo.Models
             {
                 string[] keyValue = header.Split(KeyValueDelimiter, StringSplitOptions.RemoveEmptyEntries);
 
-                message.Headers = message.Headers.Add(keyValue[0], keyValue[1]);
+                message.Headers.Add(keyValue[0], keyValue[1]);
             }
 
             message.Body = values[1];
@@ -99,7 +99,7 @@ namespace VoiceDemo.Models
 
             index += _encoding.GetBytes(Delimiter, buffer.Slice(index));
 
-            index += _encoding.GetBytes(message.Body, buffer.Slice(index));
+            index += _encoding.GetBytes(message.Body ?? string.Empty, buffer.Slice(index));
 
             return buffer.Slice(0, index);
         }
@@ -108,7 +108,7 @@ namespace VoiceDemo.Models
     public sealed class BinaryMessageSerializer : MessageSerializer<BinaryMessage>
     {
         public BinaryMessageSerializer()
-            : base(Encoding.UTF8)
+            : base(Encoding.ASCII)
         {
         }
 
@@ -124,7 +124,7 @@ namespace VoiceDemo.Models
             {
                 string[] keyValue = header.Split(KeyValueDelimiter, StringSplitOptions.RemoveEmptyEntries);
 
-                message.Headers = message.Headers.Add(keyValue[0], keyValue[1]);
+                message.Headers.Add(keyValue[0], keyValue[1]);
             }
 
             message.Body = buffer.Slice(2 + headersLength).ToArray();
@@ -149,7 +149,7 @@ namespace VoiceDemo.Models
             buffer[0] = (byte)((headersLength & 65280) >> 8);
             buffer[1] = (byte)(headersLength & 255);
 
-            message.Body.AsSpan().CopyTo(buffer.Slice(index));
+            message.Body?.AsSpan().CopyTo(buffer.Slice(index));
 
             return buffer.Slice(0, index + message.Body.Length);
         }
