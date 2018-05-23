@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System;
 
-namespace VoiceDemo.Controllers
+namespace VoiceDemo.Nexmo
 {
     [Route("api/[controller]")]
     public class NccoController : Controller

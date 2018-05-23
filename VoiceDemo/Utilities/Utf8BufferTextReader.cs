@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace VoiceDemo.Common
+namespace VoiceDemo.Utilities
 {
     internal sealed class Utf8BufferTextReader : TextReader
     {
@@ -13,10 +13,6 @@ namespace VoiceDemo.Common
 
         [ThreadStatic]
         private static Utf8BufferTextReader _cachedInstance;
-
-#if DEBUG
-        private bool _inUse;
-#endif
 
         public Utf8BufferTextReader()
         {
@@ -33,14 +29,6 @@ namespace VoiceDemo.Common
 
             // Taken off the the thread static
             _cachedInstance = null;
-#if DEBUG
-            if (reader._inUse)
-            {
-                throw new InvalidOperationException("The reader wasn't returned!");
-            }
-
-            reader._inUse = true;
-#endif
             reader.SetBuffer(utf8Buffer);
             return reader;
         }
@@ -48,9 +36,6 @@ namespace VoiceDemo.Common
         public static void Return(Utf8BufferTextReader reader)
         {
             _cachedInstance = reader;
-#if DEBUG
-            reader._inUse = false;
-#endif
         }
 
         public void SetBuffer(in ReadOnlySequence<byte> utf8Buffer)
@@ -69,10 +54,7 @@ namespace VoiceDemo.Common
             var source = _utf8Buffer.First.Span;
             var bytesUsed = 0;
             var charsUsed = 0;
-#if NETCOREAPP2_2
-            var destination = new Span<char>(buffer, index, count);
-            _decoder.Convert(source, destination, false, out bytesUsed, out charsUsed, out var completed);
-#else
+
             unsafe
             {
                 fixed (char* destinationChars = &buffer[index])
@@ -81,7 +63,7 @@ namespace VoiceDemo.Common
                     _decoder.Convert(sourceBytes, source.Length, destinationChars, count, false, out bytesUsed, out charsUsed, out var completed);
                 }
             }
-#endif
+
             _utf8Buffer = _utf8Buffer.Slice(bytesUsed);
 
             return charsUsed;

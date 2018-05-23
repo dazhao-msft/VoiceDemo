@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using System.Buffers;
 using System.Text;
 using System.Threading.Tasks;
-using VoiceDemo.Common;
+using VoiceDemo.Utilities;
 
 namespace VoiceDemo.Nexmo
 {

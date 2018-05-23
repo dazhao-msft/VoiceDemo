@@ -4,10 +4,8 @@ using System.Threading.Tasks;
 
 namespace VoiceDemo
 {
-    public class Program
+    public static class Program
     {
-        public static Task Main(string[] args) => CreateWebHostBuilder(args).Build().RunAsync();
-
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) => WebHost.CreateDefaultBuilder(args).UseStartup<Startup>();
+        public static Task Main(string[] args) => WebHost.CreateDefaultBuilder(args).UseStartup<Startup>().Build().RunAsync();
     }
 }

@@ -4,9 +4,8 @@ using Newtonsoft.Json;
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using VoiceDemo.Nexmo;
 
-namespace VoiceDemo.Controllers
+namespace VoiceDemo.Nexmo
 {
     [Route("api/[controller]")]
     public class EventsController : Controller
