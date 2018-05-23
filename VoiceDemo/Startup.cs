@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using VoiceDemo.Nexmo;
 
 namespace VoiceDemo
 {
@@ -15,7 +16,7 @@ namespace VoiceDemo
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseConnections(routes => routes.MapConnectionHandler<EchoAudioHandler>("/ws/echo"));
+            app.UseConnections(routes => routes.MapConnectionHandler<NexmoAudioHandler>("/ws/echo"));
 
             app.UseMvc();
         }

@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using VoiceDemo.Models;
+using VoiceDemo.Nexmo;
 
 namespace VoiceDemo.Controllers
 {

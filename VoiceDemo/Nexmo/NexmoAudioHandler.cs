@@ -1,18 +1,18 @@
 ﻿using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Connections.Features;
-using Microsoft.AspNetCore.SignalR.Internal;
 using Microsoft.Extensions.Logging;
 using System.Buffers;
 using System.Text;
 using System.Threading.Tasks;
+using VoiceDemo.Common;
 
-namespace VoiceDemo
+namespace VoiceDemo.Nexmo
 {
-    public class EchoAudioHandler : ConnectionHandler
+    public class NexmoAudioHandler : ConnectionHandler
     {
-        private readonly ILogger<EchoAudioHandler> _logger;
+        private readonly ILogger<NexmoAudioHandler> _logger;
 
-        public EchoAudioHandler(ILogger<EchoAudioHandler> logger)
+        public NexmoAudioHandler(ILogger<NexmoAudioHandler> logger)
         {
             _logger = logger;
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace VoiceDemo.Models
+namespace VoiceDemo.Nexmo
 {
     [DataContract]
     public class NexmoEvent
