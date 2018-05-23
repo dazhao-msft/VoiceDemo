@@ -8,14 +8,14 @@ namespace VoiceDemo
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddConnections();
+
             services.AddMvc();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseWebSockets();
-
-            app.Map("/ws/echo", subApp => subApp.UseMiddleware<EchoAudioMiddleware>());
+            app.UseConnections(routes => routes.MapConnectionHandler<EchoAudioHandler>("/ws/echo"));
 
             app.UseMvc();
         }
