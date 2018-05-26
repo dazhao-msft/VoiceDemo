@@ -16,20 +16,27 @@ namespace VoiceDemo.Utilities
             }
             else
             {
-                return SendMultiSegmentAsync(pipeWriter, source, cancellationToken);
+                return pipeWriter.WriteMultiSegmentsAsync(source, cancellationToken);
             }
         }
 
-        private static async ValueTask<FlushResult> SendMultiSegmentAsync(PipeWriter pipeWriter, ReadOnlySequence<byte> source, CancellationToken cancellationToken)
+        private static async ValueTask<FlushResult> WriteMultiSegmentsAsync(this PipeWriter pipeWriter, ReadOnlySequence<byte> source, CancellationToken cancellationToken = default)
         {
-            var position = source.Start;
+            FlushResult flushResult = default;
+
+            SequencePosition position = source.Start;
+
             while (source.TryGet(ref position, out var segment))
             {
-                await pipeWriter.WriteAsync(segment, cancellationToken);
+                flushResult = await pipeWriter.WriteAsync(segment, cancellationToken);
+
+                if (flushResult.IsCanceled)
+                {
+                    return flushResult;
+                }
             }
 
-            // Empty end of message frame
-            return await pipeWriter.WriteAsync(Memory<byte>.Empty, cancellationToken);
+            return flushResult;
         }
     }
 }
