@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Buffers;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace VoiceDemo.Utilities
@@ -55,14 +54,8 @@ namespace VoiceDemo.Utilities
             var bytesUsed = 0;
             var charsUsed = 0;
 
-            unsafe
-            {
-                fixed (char* destinationChars = &buffer[index])
-                fixed (byte* sourceBytes = &MemoryMarshal.GetReference(source))
-                {
-                    _decoder.Convert(sourceBytes, source.Length, destinationChars, count, false, out bytesUsed, out charsUsed, out var completed);
-                }
-            }
+            var destination = new Span<char>(buffer, index, count);
+            _decoder.Convert(source, destination, false, out bytesUsed, out charsUsed, out var completed);
 
             _utf8Buffer = _utf8Buffer.Slice(bytesUsed);
 

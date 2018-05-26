@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.Extensions.Logging;
-using System.Buffers;
 using System.Text;
 using System.Threading.Tasks;
 using VoiceDemo.Utilities;
@@ -74,7 +73,7 @@ namespace VoiceDemo.Nexmo
                 {
                     if (!buffer.IsEmpty)
                     {
-                        await connection.Transport.Output.WriteAsync(buffer.ToArray());
+                        await connection.Transport.Output.WriteAsync(buffer);
                     }
                     else if (result.IsCompleted)
                     {
